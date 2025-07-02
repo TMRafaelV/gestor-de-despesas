@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +55,11 @@ public class GastosController {
     public ResponseEntity<BigDecimal> totalCategoria( @RequestParam String categoria){
         var soma = gastosService.somaPorCategoria(categoria);
         return ResponseEntity.ok(soma);
-    } 
+    }
+    @DeleteMapping("/gastos/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        gastosService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }

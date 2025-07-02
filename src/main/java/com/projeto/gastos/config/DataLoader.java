@@ -18,10 +18,10 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        gastoRepository.save(new Gastos(null, "Mercado", new BigDecimal("150.00"), LocalDate.now(), "Alimentação"));
-        gastoRepository.save(new Gastos(null, "Posto", new BigDecimal("200.00"), LocalDate.now(), "Transporte"));
-        gastoRepository.save(new Gastos(null, "Onibus", new BigDecimal("200.00"), LocalDate.now(), "Transporte"));
-        gastoRepository.save(new Gastos(null, "Posto Shell", new BigDecimal("200.00"), LocalDate.now(), "Transporte"));
-        gastoRepository.save(new Gastos(null, "Uber", new BigDecimal("200.00"), LocalDate.now(), "Transporte"));
+        gastoRepository.save(new Gastos(null, "Mercado", new BigDecimal("150.00"), LocalDate.of(2025,02,05), "Alimentação"));
+        gastoRepository.save(new Gastos(null, "Posto", new BigDecimal("200.00"), LocalDate.of(2025,01,02), "Transporte"));
+        gastoRepository.save(new Gastos(null, "Onibus", new BigDecimal("8.00"), LocalDate.now(), "Transporte"));
+        gastoRepository.save(new Gastos(null, "Posto Shell", new BigDecimal("200.00"), LocalDate.of(2025,3,25), "Transporte"));
+        gastoRepository.save(new Gastos(null, "Uber", new BigDecimal("20.41"), LocalDate.now(), "Transporte"));
     }
 }

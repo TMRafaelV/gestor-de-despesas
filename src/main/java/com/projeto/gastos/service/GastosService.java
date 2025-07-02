@@ -25,12 +25,8 @@ public class GastosService {
         
     }
 
-    private Gastos consultaPorDescricao(String descricao){
-        return gastosRepository.findByDescricao(descricao);
-    }
-
-    public void delete(Gastos gastos){
-        gastosRepository.delete(gastos);
+    public void delete(Long id) {
+         gastosRepository.deleteById(id);
     }
 
     public Gastos updateDescricaoPorId(Long id, String novaDescricao) {

@@ -10,5 +10,6 @@ import com.projeto.gastos.model.entities.Gastos;
 public interface GastosRepository extends JpaRepository<Gastos,Long> {
     Gastos findByDescricao(String descricao);
     List<Gastos> findByCategoriaContainingIgnoreCase(String categoria);
+    void deleteById(Long id);
 
 }

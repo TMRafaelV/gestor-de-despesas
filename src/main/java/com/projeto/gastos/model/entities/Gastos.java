@@ -3,6 +3,8 @@ package com.projeto.gastos.model.entities;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Id;
 
 import jakarta.persistence.Entity;
@@ -28,6 +30,7 @@ public class Gastos {
     private Long id;
     private String descricao;
     private BigDecimal valor;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
     private String categoria;
 

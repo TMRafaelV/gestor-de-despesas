@@ -3,8 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Controle de Gastos</title>
+    <title>Sistema de Gestão Financeira</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #1a73e8;
+            --secondary: #174ea6;
+            --success: #0d904f;
+            --warning: #f29d38;
+            --danger: #d93025;
+            --background: #1e1e1e;  /* Fundo escuro para combinar com sua screenshot */
+            --surface: #2d2d2d;     /* Superfície mais escura */
+            --text: #ffffff;        /* Texto branco */
+            --text-light: #a0a0a0;  /* Texto secundário */
+            --border: #3d3d3d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,635 +27,424 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
         }
 
-        .container {
-            max-width: 1200px;
+        .dashboard {
+            max-width: 1440px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
         }
 
-        .header {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 10px,
-                rgba(255,255,255,0.1) 10px,
-                rgba(255,255,255,0.1) 20px
-            );
-            animation: slide 20s linear infinite;
-        }
-
-        @keyframes slide {
-            0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
-            100% { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
+        .sidebar {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            height: calc(100vh - 4rem);
+            position: sticky;
+            top: 2rem;
         }
 
         .main-content {
-            padding: 40px;
-        }
-
-        .section {
-            margin-bottom: 40px;
-            padding: 30px;
-            border-radius: 15px;
-            background: #f8f9fa;
-            border-left: 5px solid #4CAF50;
-            transition: all 0.3s ease;
-        }
-
-        .section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
             display: flex;
-            align-items: center;
-            gap: 10px;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
-        .section h2::before {
-            content: '💰';
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .summary-card h3 {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card .amount {
             font-size: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
             font-weight: 600;
-            color: #555;
+            color: var(--text);
         }
 
-        input, select, button {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
-        }
-
-        button {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(45deg, #2196F3, #1976D2);
-        }
-
-        .btn-secondary:hover {
-            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
-        }
-
-        .btn-danger {
-            background: linear-gradient(45deg, #f44336, #d32f2f);
-        }
-
-        .btn-danger:hover {
-            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
-        }
-
-        .gastos-list, .categoria-list {
-            display: grid;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .gasto-item {
-            background: white;
-            padding: 20px;
+        .card {
+            background: var(--surface);
             border-radius: 12px;
-            border-left: 4px solid #4CAF50;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            overflow: hidden;
         }
 
-        .gasto-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .gasto-header {
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
         }
 
-        .gasto-descricao {
+        .table-container {
+            margin: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table th {
+            background: var(--surface);
+            padding: 1rem;
+            text-align: left;
             font-weight: 600;
-            color: #333;
-            font-size: 1.1rem;
         }
 
-        .gasto-valor {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #e74c3c;
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
         }
 
-        .gasto-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .info-item {
+        .table tr:hover {
             background: #f8f9fa;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
         }
 
-        .info-label {
-            font-weight: 600;
-            color: #666;
+        .category-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: var(--primary);
+            color: var(--text);
         }
 
-        .total-display {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 1.5rem;
-            font-weight: 700;
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;  
+            gap: 1.5rem;
+            padding: 2rem;
         }
 
-        .loading {
-            text-align: center;
-            padding: 20px;
-            font-style: italic;
-            color: #666;
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        .error {
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border-left: 4px solid #f44336;
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
         }
 
-        .success {
-            background: #e8f5e8;
-            color: #2e7d32;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border-left: 4px solid #4CAF50;
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 4px;
+            background: var(--primary);
+            color: var(--text);
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .edit-form {
-            display: none;
-            background: #f0f8ff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-            border: 1px solid #e3f2fd;
+        .btn-primary:hover {
+            background: var(--secondary);
         }
 
-        .edit-form.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                border-radius: 15px;
-            }
-            
-            .main-content {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-            }
+        .btn-icon {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>💰 Sistema de Controle de Gastos</h1>
-            <p>Gerencie seus gastos de forma inteligente e organizada</p>
-        </div>
-
-        <div class="main-content">
-            <!-- Seção: Adicionar Novo Gasto -->
-            <div class="section">
-                <h2>Adicionar Novo Gasto</h2>
-                <form id="gastoForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="descricao">Descrição:</label>
-                            <input type="text" id="descricao" name="descricao" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="valor">Valor (R$):</label>
-                            <input type="number" id="valor" name="valor" step="0.01" min="0" required>
-                        </div>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <h1>Gestão Financeira</h1>
+            <div class="form-container">
+                <form id="expenseForm" class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="description" required>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="categoria">Categoria:</label>
-                            <select id="categoria" name="categoria" required>
-                                <option value="">Selecione uma categoria</option>
-                                <option value="alimentacao">Alimentação</option>
-                                <option value="transporte">Transporte</option>
-                                <option value="lazer">Lazer</option>
-                                <option value="saude">Saúde</option>
-                                <option value="educacao">Educação</option>
-                                <option value="moradia">Moradia</option>
-                                <option value="outros">Outros</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="data">Data:</label>
-                            <input type="date" id="data" name="data" required>
-                        </div>
+                    <div class="form-group">
+                        <label>Valor</label>
+                        <input type="number" id="amount" step="0.01" required>
                     </div>
-                    <button type="submit">💾 Salvar Gasto</button>
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <select id="category" required>
+                            <option value="">Selecione</option>
+                            <option value="alimentacao">Alimentação</option>
+                            <option value="transporte">Transporte</option>
+                            <option value="moradia">Moradia</option>
+                            <option value="saude">Saúde</option>
+                            <option value="educacao">Educação</option>
+                            <option value="lazer">Lazer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Registrar</button>
                 </form>
-                <div id="addMessage"></div>
             </div>
+        </aside>
 
-            <!-- Seção: Listar Todos os Gastos -->
-            <div class="section">
-                <h2>Todos os Gastos</h2>
-                <button type="button" onclick="carregarGastos()" class="btn-secondary">🔄 Atualizar Lista</button>
-                <div id="gastosContainer">
-                    <div class="loading">Carregue a lista para visualizar os gastos...</div>
+        <main class="main-content">
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <h3>Total Geral</h3>
+                    <div class="amount" id="totalAmount">R$ 0,00</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Maior Gasto</h3>
+                    <div class="amount" id="highestExpense">R$ 0,00</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Média Mensal</h3>
+                    <div class="amount" id="monthlyAverage">R$ 0,00</div>
                 </div>
             </div>
 
-            <!-- Seção: Consultar por Categoria -->
-            <div class="section">
-                <h2>Consultar por Categoria</h2>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="categoriaConsulta">Categoria:</label>
-                        <select id="categoriaConsulta">
-                            <option value="">Selecione uma categoria</option>
-                            <option value="alimentacao">Alimentação</option>
-                            <option value="transporte">Transporte</option>
-                            <option value="lazer">Lazer</option>
-                            <option value="saude">Saúde</option>
-                            <option value="educacao">Educação</option>
-                            <option value="moradia">Moradia</option>
-                            <option value="outros">Outros</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" onclick="consultarCategoria()" class="btn-secondary">🔍 Consultar</button>
-                    </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>Registros Financeiros</h2>
+                    <select id="categoryFilter">
+                        <option value="">Todas Categorias</option>
+                        <option value="alimentacao">Alimentação</option>
+                        <option value="transporte">Transporte</option>
+                        <option value="moradia">Moradia</option>
+                        <option value="saude">Saúde</option>
+                        <option value="educacao">Educação</option>
+                        <option value="lazer">Lazer</option>
+                    </select>
                 </div>
-                <div id="categoriaContainer"></div>
-            </div>
-
-            <!-- Seção: Total por Categoria -->
-            <div class="section">
-                <h2>Total por Categoria</h2>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="categoriaSoma">Categoria:</label>
-                        <select id="categoriaSoma">
-                            <option value="">Selecione uma categoria</option>
-                            <option value="alimentacao">Alimentação</option>
-                            <option value="transporte">Transporte</option>
-                            <option value="lazer">Lazer</option>
-                            <option value="saude">Saúde</option>
-                            <option value="educacao">Educação</option>
-                            <option value="moradia">Moradia</option>
-                            <option value="outros">Outros</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" onclick="calcularTotalCategoria()" class="btn-secondary">💰 Calcular Total</button>
-                    </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Categoria</th>
+                                <th>Data</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expensesTable"></tbody>
+                    </table>
                 </div>
-                <div id="totalContainer"></div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script>
-        const API_BASE_URL = 'http://localhost:8080';
+        document.addEventListener('DOMContentLoaded', function() {
+            loadExpenses();
+            setupEventListeners();
+        });
 
-        // Configurar data atual como padrão
-        document.getElementById('data').valueAsDate = new Date();
+        function setupEventListeners() {
+            document.getElementById('expenseForm').addEventListener('submit', handleSubmit);
+            document.getElementById('categoryFilter').addEventListener('change', handleCategoryFilter);
+        }
 
-        // Função para salvar gasto
-        document.getElementById('gastoForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const gasto = {
-                descricao: document.getElementById('descricao').value,
-                valor: parseFloat(document.getElementById('valor').value),
-                categoria: document.getElementById('categoria').value,
-                data: document.getElementById('data').value
+        async function loadExpenses() {
+            try {
+                const response = await fetch('/gastos');
+                const expenses = await response.json();
+                console.log('Dados recebidos do backend:', expenses); 
+                updateExpensesTable(expenses);
+                updateSummary(expenses);
+            } catch (error) {
+                console.error('Erro ao carregar gastos:', error);
+            }
+        }
+
+        function formatarData(date) {
+            console.log('Date recebida:', date);
+            if (!date) return 'Data não disponível';
+            try {
+                // Se vier como string yyyy-MM-dd
+                if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+                    const [ano, mes, dia] = date.split('-');
+                    return `${dia}/${mes}/${ano}`;
+                }
+                // Tenta criar um objeto Date
+                const dataFormatada = new Date(date);
+                if (!isNaN(dataFormatada.getTime())) {
+                    const dia = dataFormatada.getDate().toString().padStart(2, '0');
+                    const mes = (dataFormatada.getMonth() + 1).toString().padStart(2, '0');
+                    const ano = dataFormatada.getFullYear();
+                    return `${dia}/${mes}/${ano}`;
+                }
+                return 'Data inválida';
+            } catch (error) {
+                console.error('Erro ao formatar data:', error);
+                return 'Data inválida';
+            }
+        }
+
+        function updateExpensesTable(expenses) {
+            // Ordena do mais recente para o mais antigo
+            expenses.sort((a, b) => {
+                // Troque 'date' por 'data' se seu backend enviar como 'data'
+                const dataA = new Date(a.date);
+                const dataB = new Date(b.date);
+                return dataB - dataA;
+            });
+
+            const tbody = document.getElementById('expensesTable');
+            tbody.innerHTML = expenses.map(expense => `
+                <tr>
+                    <td>
+                        <span id="desc-${expense.id}">${expense.descricao}</span>
+                        <input type="text" id="input-desc-${expense.id}" value="${expense.descricao}" style="display:none;width:80%;" />
+                    </td>
+                    <td>R$ ${expense.valor.toFixed(2)}</td>
+                    <td><span class="category-badge">${expense.categoria}</span></td>
+                    <td>${formatarData(expense.date)}</td>
+                    <td>
+                        <button class="btn-icon" onclick="showEditDesc(${expense.id})">Editar</button>
+                        <button class="btn-icon" onclick="deleteExpense(${expense.id})">Apagar</button>
+                        <button class="btn-icon" id="btn-save-${expense.id}" style="display:none;" onclick="saveEditDesc(${expense.id})">Salvar</button>
+                        <button class="btn-icon" id="btn-cancel-${expense.id}" style="display:none;" onclick="cancelEditDesc(${expense.id})">Cancelar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Função para mostrar o input de edição
+        function showEditDesc(id) {
+            document.getElementById(`desc-${id}`).style.display = 'none';
+            document.getElementById(`input-desc-${id}`).style.display = '';
+            document.getElementById(`btn-save-${id}`).style.display = '';
+            document.getElementById(`btn-cancel-${id}`).style.display = '';
+        }
+
+        // Função para cancelar edição
+        function cancelEditDesc(id) {
+            document.getElementById(`desc-${id}`).style.display = '';
+            document.getElementById(`input-desc-${id}`).style.display = 'none';
+            document.getElementById(`btn-save-${id}`).style.display = 'none';
+            document.getElementById(`btn-cancel-${id}`).style.display = 'none';
+        }
+
+        // Função para salvar edição
+        async function saveEditDesc(id) {
+            const novaDescricao = document.getElementById(`input-desc-${id}`).value;
+            try {
+                await fetch(`/${id}/descricao`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ descricao: novaDescricao })
+                });
+                loadExpenses();
+            } catch (error) {
+                alert('Erro ao editar descrição');
+            }
+        }
+
+        // Função para apagar gasto
+        async function deleteExpense(id) {
+            if (!confirm('Tem certeza que deseja apagar este gasto?')) return;
+            try {
+                await fetch(`/gastos/${id}`, { method: 'DELETE' });
+                loadExpenses();
+            } catch (error) {
+                alert('Erro ao apagar gasto');
+            }
+        }
+
+        function updateSummary(expenses) {
+            const total = expenses.reduce((sum, exp) => sum + exp.valor, 0);
+            const highest = Math.max(...expenses.map(exp => exp.valor));
+            const monthly = total / getUniqueMonths(expenses);
+
+            document.getElementById('totalAmount').textContent = `R$ ${total.toFixed(2)}`;
+            document.getElementById('highestExpense').textContent = `R$ ${highest.toFixed(2)}`;
+            document.getElementById('monthlyAverage').textContent = `R$ ${monthly.toFixed(2)}`;
+        }
+
+        function getUniqueMonths(expenses) {
+            const months = new Set(expenses.map(exp => {
+                if (!exp.date) return null;
+                try {
+                    return new Date(exp.date).toISOString().substring(0, 7);
+                } catch {
+                    return null;
+                }
+            }).filter(Boolean));
+            return months.size || 1;
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const formData = {
+                descricao: document.getElementById('description').value,
+                valor: parseFloat(document.getElementById('amount').value),
+                categoria: document.getElementById('category').value,
+                data: document.getElementById('date').value
             };
 
             try {
-                const response = await fetch(`${API_BASE_URL}/gastos`, {
+                await fetch('/gastos', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(gasto)
+                    body: JSON.stringify(formData)
                 });
-
-                const messageDiv = document.getElementById('addMessage');
                 
-                if (response.ok) {
-                    messageDiv.innerHTML = '<div class="success">✅ Gasto salvo com sucesso!</div>';
-                    document.getElementById('gastoForm').reset();
-                    document.getElementById('data').valueAsDate = new Date();
-                } else {
-                    messageDiv.innerHTML = '<div class="error">❌ Erro ao salvar gasto</div>';
-                }
+                event.target.reset();
+                loadExpenses();
             } catch (error) {
-                document.getElementById('addMessage').innerHTML = '<div class="error">❌ Erro de conexão</div>';
+                console.error('Erro ao salvar:', error);
             }
-        });
+        }
 
-        // Função para carregar todos os gastos
-        async function carregarGastos() {
-            const container = document.getElementById('gastosContainer');
-            container.innerHTML = '<div class="loading">🔄 Carregando gastos...</div>';
-
+        async function handleCategoryFilter(event) {
+            const category = event.target.value;
             try {
-                const response = await fetch(`${API_BASE_URL}/gastos`);
-                
-                if (!response.ok) {
-                    throw new Error('Erro ao buscar gastos');
-                }
-
-                const gastos = await response.json();
-                
-                if (gastos.length === 0) {
-                    container.innerHTML = '<div class="loading">📋 Nenhum gasto encontrado</div>';
-                    return;
-                }
-
-                container.innerHTML = gastos.map(gasto => `
-                    <div class="gasto-item">
-                        <div class="gasto-header">
-                            <span class="gasto-descricao">${gasto.descricao}</span>
-                            <span class="gasto-valor">R$ ${gasto.valor.toFixed(2)}</span>
-                        </div>
-                        <div class="gasto-info">
-                            <div class="info-item">
-                                <span class="info-label">Categoria:</span> ${gasto.categoria}
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Data:</span> ${formatarData(gasto.data)}
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">ID:</span> ${gasto.id}
-                            </div>
-                        </div>
-                        <div style="margin-top: 15px;">
-                            <button onclick="mostrarEditarDescricao(${gasto.id})" class="btn-secondary" style="width: auto; padding: 8px 16px; margin-right: 10px;">✏️ Editar Descrição</button>
-                        </div>
-                        <div id="editForm${gasto.id}" class="edit-form">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Nova Descrição:</label>
-                                    <input type="text" id="novaDescricao${gasto.id}" value="${gasto.descricao}">
-                                </div>
-                                <div class="form-group">
-                                    <button onclick="atualizarDescricao(${gasto.id})" class="btn-secondary" style="width: auto; padding: 8px 16px; margin-right: 10px;">💾 Salvar</button>
-                                    <button onclick="cancelarEdicao(${gasto.id})" class="btn-danger" style="width: auto; padding: 8px 16px;">❌ Cancelar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-
+                const response = await fetch(
+                    category ? `/categoria?categoria=${category}` : '/gastos'
+                );
+                const expenses = await response.json();
+                updateExpensesTable(expenses);
+                updateSummary(expenses);
             } catch (error) {
-                container.innerHTML = '<div class="error">❌ Erro ao carregar gastos</div>';
+                console.error('Erro ao filtrar:', error);
             }
-        }
-
-        // Função para consultar gastos por categoria
-        async function consultarCategoria() {
-            const categoria = document.getElementById('categoriaConsulta').value;
-            const container = document.getElementById('categoriaContainer');
-
-            if (!categoria) {
-                container.innerHTML = '<div class="error">⚠️ Selecione uma categoria</div>';
-                return;
-            }
-
-            container.innerHTML = '<div class="loading">🔄 Buscando gastos...</div>';
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/categoria?categoria=${categoria}`);
-                
-                if (!response.ok) {
-                    throw new Error('Erro ao buscar gastos por categoria');
-                }
-
-                const gastos = await response.json();
-                
-                if (gastos.length === 0) {
-                    container.innerHTML = '<div class="loading">📋 Nenhum gasto encontrado para esta categoria</div>';
-                    return;
-                }
-
-                container.innerHTML = `
-                    <div class="categoria-list">
-                        ${gastos.map(gasto => `
-                            <div class="gasto-item">
-                                <div class="gasto-header">
-                                    <span class="gasto-descricao">${gasto.descricao}</span>
-                                    <span class="gasto-valor">R$ ${gasto.valor.toFixed(2)}</span>
-                                </div>
-                                <div class="gasto-info">
-                                    <div class="info-item">
-                                        <span class="info-label">Data:</span> ${formatarData(gasto.data)}
-                                    </div>
-                                    <div class="info-item">
-                                        <span class="info-label">ID:</span> ${gasto.id}
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-
-            } catch (error) {
-                container.innerHTML = '<div class="error">❌ Erro ao consultar categoria</div>';
-            }
-        }
-
-        // Função para calcular total por categoria
-        async function calcularTotalCategoria() {
-            const categoria = document.getElementById('categoriaSoma').value;
-            const container = document.getElementById('totalContainer');
-
-            if (!categoria) {
-                container.innerHTML = '<div class="error">⚠️ Selecione uma categoria</div>';
-                return;
-            }
-
-            container.innerHTML = '<div class="loading">🔄 Calculando total...</div>';
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/categoria/soma?categoria=${categoria}`);
-                
-                if (!response.ok) {
-                    throw new Error('Erro ao calcular total');
-                }
-
-                const total = await response.json();
-                
-                container.innerHTML = `
-                    <div class="total-display">
-                        📊 Total da categoria "${categoria}": R$ ${total.toFixed(2)}
-                    </div>
-                `;
-
-            } catch (error) {
-                container.innerHTML = '<div class="error">❌ Erro ao calcular total</div>';
-            }
-        }
-
-        // Função para mostrar formulário de edição
-        function mostrarEditarDescricao(id) {
-            const form = document.getElementById(`editForm${id}`);
-            form.classList.add('show');
-        }
-
-        // Função para cancelar edição
-        function cancelarEdicao(id) {
-            const form = document.getElementById(`editForm${id}`);
-            form.classList.remove('show');
-        }
-
-        // Função para atualizar descrição
-        async function atualizarDescricao(id) {
-            const novaDescricao = document.getElementById(`novaDescricao${id}`).value;
-            
-            if (!novaDescricao.trim()) {
-                alert('⚠️ Digite uma nova descrição');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/${id}/descricao`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ novaDescricao: novaDescricao })
-                });
-
-                if (response.ok) {
-                    alert('✅ Descrição atualizada com sucesso!');
-                    cancelarEdicao(id);
-                    carregarGastos(); // Recarregar a lista
-                } else {
-                    alert('❌ Erro ao atualizar descrição');
-                }
-            } catch (error) {
-                alert('❌ Erro de conexão');
-            }
-        }
-
-        // Função auxiliar para formatar data
-        function formatarData(dataString) {
-            const data = new Date(dataString);
-            return data.toLocaleDateString('pt-BR');
         }
     </script>
 </body>
