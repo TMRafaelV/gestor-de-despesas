@@ -199,7 +199,7 @@ select:focus {
     border: 1px solid var(--border);
 }
 
-/* Scrollbar elegante */
+
 .registros-financeiros::-webkit-scrollbar {
     width: 8px;
 }

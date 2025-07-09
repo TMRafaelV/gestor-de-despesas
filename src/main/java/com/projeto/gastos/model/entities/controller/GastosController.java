@@ -27,7 +27,7 @@ public class GastosController {
     public ResponseEntity<?> salvar(@RequestBody Gastos gasto){
 
         gastosService.salvar(gasto);
-
+        
         return ResponseEntity.ok().build();
 
     }
@@ -38,8 +38,11 @@ public class GastosController {
         return ResponseEntity.ok(lista);
     }
 
-    @PatchMapping("/{id}/descricao")
-    public ResponseEntity<Gastos> updateDescricao(@PathVariable Long id, @RequestBody AtualizaDescricaoDTO dto) {
+    @PatchMapping("/gastos/{id}/descricao")
+    public ResponseEntity<Gastos> atualizarDescricao(
+            @PathVariable Long id,
+            @RequestBody AtualizaDescricaoDTO dto
+    ) {
         var gastoAtualizado = gastosService.updateDescricaoPorId(id, dto.getNovaDescricao());
         return ResponseEntity.ok(gastoAtualizado);
     }

@@ -3,12 +3,27 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
 });
 
+const input = document.getElementById('description');
+
+input.addEventListener('input', (e) => {
+  const valor = e.target.value;
+  const regex = /^[a-zA-Z0-9\s]+$/;
+
+  if (!regex.test(valor)) {
+    e.target.value = valor.replace(/[^a-zA-Z0-9\s]/g, '');
+  }
+  if (!/^[a-zA-Z]+$/.test(valor) && !/^[a-zA-Z0-9]+$/.test(valor)) {
+    e.target.value = '';
+  }
+  
+});
+
 function setupEventListeners() {
     document.getElementById('expenseForm').addEventListener('submit', handleSubmit);
     document.getElementById('categoryFilter').addEventListener('change', handleCategoryFilter);
 }
 
-let grafico; // Variável global para o gráfico
+let grafico; 
 
 function atualizarGrafico(expenses) {
     // Agrupa os valores por categoria
@@ -108,10 +123,10 @@ function atualizarGraficoMensal(expenses) {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, // Permite ajustar altura do canvas
+            maintainAspectRatio: false, 
             plugins: {
                 legend: {
-                    position: 'right', // <--- Altere para 'bottom' se preferir
+                    position: 'right', 
                     labels: {
                         color: '#fff',
                         font: {
@@ -154,7 +169,7 @@ async function handleCategoryFilter(event) {
 function formatarData(date) {
     if (!date) return 'Data não disponível';
     try {
-        // Se vier como string yyyy-MM-dd
+       
         if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
             const [ano, mes, dia] = date.split('-');
             return `${dia}/${mes}/${ano}`;
@@ -222,16 +237,17 @@ function cancelEditDesc(id) {
 async function saveEditDesc(id) {
     const novaDescricao = document.getElementById(`input-desc-${id}`).value;
     try {
-        await fetch(`/${id}/descricao`, {
+        await fetch(`/gastos/${id}/descricao`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ descricao: novaDescricao })
+            body: JSON.stringify({ novaDescricao: novaDescricao }) // campo correto do DTO
         });
         loadExpenses();
     } catch (error) {
         alert('Erro ao editar descrição');
     }
 }
+
 
 
 async function deleteExpense(id) {
@@ -272,7 +288,7 @@ async function handleSubmit(event) {
         descricao: document.getElementById('description').value,
         valor: parseFloat(document.getElementById('amount').value),
         categoria: document.getElementById('category').value,
-        data: document.getElementById('date').value
+        date: document.getElementById('date').value
     };
 
     try {

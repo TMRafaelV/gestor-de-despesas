@@ -30,7 +30,6 @@ public class Gastos {
     private Long id;
     private String descricao;
     private BigDecimal valor;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
     private String categoria;
 
@@ -82,7 +81,12 @@ public class Gastos {
             return false;
         return true;
     }
-
+    @Override
+    public String toString() {
+        return "Gastos [id=" + id + ", descricao=" + descricao + ", valor=" + valor + ", date=" + date + ", categoria="
+                + categoria + "]";
+    }
+    
     
     
 }

@@ -1,17 +1,9 @@
 package com.projeto.gastos.dto;
 
-public class AtualizaDescricaoDTO{
-    private String descricao;
-    private String novaDescricao;
+public class AtualizaDescricaoDTO {
 
  
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
+    private String novaDescricao;
 
     public String getNovaDescricao() {
         return novaDescricao;
