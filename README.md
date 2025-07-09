@@ -25,4 +25,5 @@ Este projeto é um dashboard simples para organização e visualização de desp
 | **HTML + CSS** | Estrutura e estilização da interface |
 
 ---
+npm install xlsx
 

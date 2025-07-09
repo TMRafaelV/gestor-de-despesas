@@ -4,18 +4,23 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const input = document.getElementById('description');
+const errorText = document.getElementById('descriptionError');
 
 input.addEventListener('input', (e) => {
-  const valor = e.target.value;
-  const regex = /^[a-zA-Z0-9\s]+$/;
-
-  if (!regex.test(valor)) {
-    e.target.value = valor.replace(/[^a-zA-Z0-9\s]/g, '');
-  }
-  if (!/^[a-zA-Z]+$/.test(valor) && !/^[a-zA-Z0-9]+$/.test(valor)) {
+  let valor = e.target.value;
+  valor = valor.replace(/[^a-zA-Z0-9\s]/g, '');
+  const apenasNumeros = /^[0-9\s]+$/;
+  if (apenasNumeros.test(valor)) {
+    e.target.classList.add('input-error');
+    errorText.style.display = 'block';
     e.target.value = '';
+    return;
   }
-  
+  if (valor.length > 0) {
+    e.target.classList.remove('input-error');
+    errorText.style.display = 'none';
+  }
+  e.target.value = valor;
 });
 
 function setupEventListeners() {
@@ -304,5 +309,28 @@ async function handleSubmit(event) {
         loadExpenses();
     } catch (error) {
         console.error('Erro ao salvar:', error);
+    }
+}
+async function exportarGastosParaExcel() {
+    try {
+        const res = await fetch('/gastos');
+        const dados = await res.json();
+
+        // Formatar os dados para a planilha
+        const planilhaDados = dados.map(g => ({
+            Descrição: g.descricao,
+            Valor: g.valor.toFixed(2),
+            Categoria: g.categoria,
+            Data: formatarData(g.date)
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(planilhaDados);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Gastos");
+
+        XLSX.writeFile(workbook, "gastos.xlsx");
+    } catch (error) {
+        console.error("Erro ao exportar planilha:", error);
+        alert("Erro ao gerar planilha.");
     }
 }
